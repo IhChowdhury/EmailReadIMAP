@@ -9,7 +9,6 @@ public class MessageModel {
     private String subject;
     private String body;
     private String fromEmail;
-    private String rawBody;
     private String mailContentType;
     private String receiveDate;
     private long receiveTime;
@@ -36,14 +35,6 @@ public class MessageModel {
 
     public void setFromEmail(String fromEmail) {
         this.fromEmail = fromEmail;
-    }
-
-    public String getRawBody() {
-        return rawBody;
-    }
-
-    public void setRawBody(String rawBody) {
-        this.rawBody = rawBody;
     }
 
     public String getMailContentType() {
