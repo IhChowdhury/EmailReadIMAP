@@ -21,8 +21,8 @@ public class EmailReaderServiceImp implements IEmailRederService {
     }
 
     @Override
-    public List<MessageModel> readInbox(Store store) throws MessagingException, IOException, Exception {
-        return EmailReader.readInbox(store);
+    public List<MessageModel> readInbox(Store store, int readingLimit) throws MessagingException, IOException, Exception {
+        return EmailReader.readInbox(store, readingLimit);
     }
-    
+
 }

@@ -89,7 +89,7 @@ public class EmailReader {
      * @throws IOException
      * @throws Exception 
      */
-    public static List<MessageModel> readInbox(Store store) throws MessagingException, IOException, Exception {
+    public static List<MessageModel> readInbox(Store store, int readingLimit) throws MessagingException, IOException, Exception {
 
         Folder folder = null;
         List<MessageModel> messageModelList = new LinkedList<MessageModel>();
@@ -105,6 +105,9 @@ public class EmailReader {
             int count = 0;
             for (Message message : messages) {
                 count++;
+                if(count > readingLimit){
+                    break;
+                }
                 System.out.println("No. " + count);
 //                if (message.isSet(Flags.Flag.SEEN)) {
 //                    continue;
@@ -112,27 +115,40 @@ public class EmailReader {
 
                 String from = "unknown";
 
-                if (message.getReplyTo().length > 0) {
-                    from = message.getReplyTo()[0].toString();
-                } else if (message.getFrom().length > 0) {
+                if (message.getFrom().length > 0) {
                     from = message.getFrom()[0].toString();
-                }
+                }else if (message.getReplyTo().length > 0) {
+                    from = message.getReplyTo()[0].toString();
+                } 
 
                 String subject = message.getSubject();
                 String contentType = message.getContentType();
 
-                System.out.println("From: " + from);
-                System.out.println("Subject : " + subject);
-                System.out.println("contentType " + contentType);
+//                System.out.println("From: " + from);
+//                System.out.println("Subject : " + subject);
+//                System.out.println("contentType " + contentType);
 
-                
-                MimeMessageParser parser = new MimeMessageParser((MimeMessage) message).parse();
+                String senderName = "";
+                String senderEmail = "";
+                if(from.contains("<")){
+                    String fromSplits[] = from.split("<");
+                    senderName = fromSplits[0].trim();
+                    senderEmail = fromSplits[1].replace("<", "").replace(">", "").trim();
+                }else{
+                    senderEmail = from.trim();
+                }
+                MimeMessage mimeMessage = (MimeMessage) message;
+                String messageId = mimeMessage.getMessageID();
+                System.out.println("");
+                MimeMessageParser parser = new MimeMessageParser(mimeMessage).parse();
                 String body = parser.getPlainContent();
                 System.out.println("text");
                 MessageModel messageModel = new MessageModel();
-                messageModel.setFromEmail(from);
+                messageModel.setFromEmail(senderEmail);
+                messageModel.setSenderName(senderName);
                 messageModel.setSubject(subject);
                 messageModel.setBody(body);
+                messageModel.setMessageId(messageId);
                 if (message.getReceivedDate() != null) {
                     messageModel.setReceiveDate(message.getReceivedDate().toString());
                     messageModel.setReceiveTime(message.getReceivedDate().getTime());
