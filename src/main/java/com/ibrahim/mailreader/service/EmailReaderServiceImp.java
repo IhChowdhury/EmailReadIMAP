@@ -5,7 +5,8 @@ import com.ibrahim.mailreader.configuration.EmailConfiguration;
 import com.ibrahim.mailreader.exception.MailBotException;
 import com.ibrahim.mailreader.model.MessageModel;
 import java.io.IOException;
-import java.util.List;
+import javax.mail.Folder;
+import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Store;
 
@@ -14,6 +15,7 @@ import javax.mail.Store;
  * @author Ibrahim Chowdhury
  */
 public class EmailReaderServiceImp implements IEmailRederService {
+    EmailReader emailReader = new EmailReader();
 
     @Override
     public Store configureEmail(String host, String port, String protocal, String email, String password) throws MessagingException, IOException, MailBotException {
@@ -21,8 +23,15 @@ public class EmailReaderServiceImp implements IEmailRederService {
     }
 
     @Override
-    public List<MessageModel> readInbox(Store store, int readingLimit) throws MessagingException, IOException, Exception {
-        return EmailReader.readInbox(store, readingLimit);
+    public Message[] readInbox(Folder folder, Store store) throws MessagingException {
+        return emailReader.readInbox(folder,store);
     }
+
+    @Override
+    public MessageModel parseMessageModel(Message message) throws MessagingException, Exception {
+        return emailReader.parseMessageModel(message);
+    }
+
+    
 
 }
