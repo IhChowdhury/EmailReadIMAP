@@ -29,7 +29,7 @@ public class Tester {
         Store store;
         try {
             store = emailRederService.configureEmail(host, port, protocal, email, password);
-            List<MessageModel> messageModelList = emailRederService.readInbox(store,5);
+//            List<MessageModel> messageModelList = emailRederService.readInbox(store,5);
         } catch (MessagingException ex) {
             Logger.getLogger(Tester.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
